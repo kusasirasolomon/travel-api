@@ -11,7 +11,7 @@
             "description": "Local development server"
         },
         {
-            "url": "https://travel-api.onrender.com",
+            "url": "https://travel-api-5whx.onrender.com",
             "description": "Render production server"
         }
     ],
