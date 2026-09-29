@@ -1,4 +1,5 @@
 const express = require("express");
+const authRoutes = require("./routes/auth");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const swaggerUi = require("swagger-ui-express");
@@ -26,6 +27,7 @@ app.get("/", (req, res) => {
 app.use("/places", placesRoutes);
 
 app.use("/destinations", destinationsRoutes);
+app.use("/auth", authRoutes);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 

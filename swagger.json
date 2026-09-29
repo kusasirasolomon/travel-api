@@ -17,6 +17,10 @@
     ],
     "tags": [
         {
+            "name": "Authentication",
+            "description": "User registration and authentication"
+        },
+        {
             "name": "Places",
             "description": "Travel place operations"
         },
@@ -26,6 +30,100 @@
         }
     ],
     "paths": {
+        "/auth/register": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Register a new user",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RegisterInput"
+                            },
+                            "example": {
+                                "username": "Solomon",
+                                "email": "solomon@example.com",
+                                "password": "password123"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User registered successfully"
+                    },
+                    "400": {
+                        "description": "Invalid registration data or user already exists"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
+        "/auth/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Log in a user",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginInput"
+                            },
+                            "example": {
+                                "email": "solomon@example.com",
+                                "password": "password123"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login successful and JWT token returned"
+                    },
+                    "400": {
+                        "description": "Email or password missing"
+                    },
+                    "401": {
+                        "description": "Invalid email or password"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
+        "/auth/logout": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Log out the current user",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Logout successful"
+                    },
+                    "401": {
+                        "description": "Authentication required"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
         "/places": {
             "get": {
                 "tags": [
@@ -46,6 +144,11 @@
                     "Places"
                 ],
                 "summary": "Create a new place",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -73,6 +176,9 @@
                     },
                     "400": {
                         "description": "Validation error"
+                    },
+                    "401": {
+                        "description": "Authentication required"
                     },
                     "500": {
                         "description": "Server error"
@@ -111,6 +217,11 @@
                     "Places"
                 ],
                 "summary": "Update a place",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/id"
@@ -133,6 +244,9 @@
                     "400": {
                         "description": "Validation error"
                     },
+                    "401": {
+                        "description": "Authentication required"
+                    },
                     "404": {
                         "description": "Place not found"
                     },
@@ -146,6 +260,11 @@
                     "Places"
                 ],
                 "summary": "Delete a place",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/id"
@@ -157,6 +276,9 @@
                     },
                     "400": {
                         "description": "Invalid ID"
+                    },
+                    "401": {
+                        "description": "Authentication required"
                     },
                     "404": {
                         "description": "Place not found"
@@ -187,6 +309,11 @@
                     "Destinations"
                 ],
                 "summary": "Create a new destination",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -210,6 +337,9 @@
                     },
                     "400": {
                         "description": "Validation error"
+                    },
+                    "401": {
+                        "description": "Authentication required"
                     },
                     "500": {
                         "description": "Server error"
@@ -248,6 +378,11 @@
                     "Destinations"
                 ],
                 "summary": "Update a destination",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/id"
@@ -270,6 +405,9 @@
                     "400": {
                         "description": "Validation error"
                     },
+                    "401": {
+                        "description": "Authentication required"
+                    },
                     "404": {
                         "description": "Destination not found"
                     },
@@ -283,6 +421,11 @@
                     "Destinations"
                 ],
                 "summary": "Delete a destination",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/id"
@@ -295,6 +438,9 @@
                     "400": {
                         "description": "Invalid ID"
                     },
+                    "401": {
+                        "description": "Authentication required"
+                    },
                     "404": {
                         "description": "Destination not found"
                     },
@@ -306,6 +452,13 @@
         }
     },
     "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        },
         "parameters": {
             "id": {
                 "name": "id",
@@ -318,6 +471,45 @@
             }
         },
         "schemas": {
+            "RegisterInput": {
+                "type": "object",
+                "required": [
+                    "username",
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "username": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password",
+                        "minLength": 6
+                    }
+                }
+            },
+            "LoginInput": {
+                "type": "object",
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password"
+                    }
+                }
+            },
             "PlaceInput": {
                 "type": "object",
                 "required": [

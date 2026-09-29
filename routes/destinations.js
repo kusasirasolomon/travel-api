@@ -8,16 +8,15 @@ const {
     deleteDestination
 } = require("../controllers/destinations");
 
+const authenticate = require("../middleware/authenticate");
+
 const router = express.Router();
 
 router.get("/", getAllDestinations);
-
 router.get("/:id", getDestinationById);
 
-router.post("/", createDestination);
-
-router.put("/:id", updateDestination);
-
-router.delete("/:id", deleteDestination);
+router.post("/", authenticate, createDestination);
+router.put("/:id", authenticate, updateDestination);
+router.delete("/:id", authenticate, deleteDestination);
 
 module.exports = router;
